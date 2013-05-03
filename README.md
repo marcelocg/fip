@@ -1,7 +1,7 @@
 # Fip
 
-TODO: Write a gem description
-
+A Ruby gem that wraps Find my iPhone API
+===
 ## Installation
 
 Add this line to your application's Gemfile:
