@@ -1,7 +1,7 @@
 # Fip
 
-A Ruby gem that wraps Find my iPhone API
-===
+A Ruby gem that wraps Find my iPhone API. At first, only the location discovery feature is implemented
+
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -18,7 +18,15 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+    require "fip"
+
+    fip = Fip.new("your@appleid.email.com", "yourAppleIDPassword")
+    fip.locate
+
+    # {"latitude"=>-3.729970429962879, 
+    #   "longitude"=>-38.4906177200629, 
+    #   "accuracy"=>65.0, 
+    #   "timestamp"=>1367639191501}
 
 ## Contributing
 

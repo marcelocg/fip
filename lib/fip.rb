@@ -7,7 +7,12 @@ module Fip
     def initialize(email, passwd)
       @email = email
       @passwd = passwd
+      @partition = read_partition
+      @devices = read_devices
+      puts locate
+    end
 
+    def read_partition
       body =  { "clientContext" => 
                 { "appName"=>"FindMyiPhone",
                   "appVersion"=>"1.4",
@@ -20,10 +25,40 @@ module Fip
                 }
               }
       response = post("/fmipservice/device/#{@email}/initClient", body)
-      puts "Aqui vai o response"
-      puts response.inspect
-      puts "fim do response"
-      @partition = response.headers["X-Apple-MMe-Host"]
+      response.headers["X-Apple-MMe-Host"]
+    end
+
+    def read_devices
+      body = { "clientContext" =>
+               { "appName"        => "FindMyiPhone",
+                 "appVersion"     => "1.4",
+                 "buildVersion"   => "145",
+                 "deviceUDID"     => "0000000000000000000000000000000000000000",
+                 "inactiveTime"   => 2147483647,
+                 "osVersion"      => "4.2.1",
+                 "personID"       => 0,
+                 "productType"    => "iPad1,1"
+               }
+             }
+      response = post("/fmipservice/device/#{@email}/initClient", body)
+      if response["error"]
+        puts "Error from web service: #{response["error"]}"
+        return []
+      end
+      response["content"]
+    end
+
+    def locate(device_num=0)
+      @devices = read_devices
+      device = @devices[device_num]
+
+      { 
+        "latitude" => device["location"]["latitude"],
+        "longitude" => device["location"]["longitude"],
+        "accuracy" => device["location"]["horizontalAccuracy"],
+        "timestamp" => device["location"]["timeStamp"]
+      }
+
     end
 
     def post(url, body)
